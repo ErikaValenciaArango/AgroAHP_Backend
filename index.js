@@ -5,7 +5,7 @@ require("dotenv").config() //Variables de entorno
 const express = require("express");
 const cors = require("cors");
 
-//const estudianteRoutes = require('./Estudiantes/estudiante_routes');
+const userRoutes = require('./users/users_routes');
 
 /* Conexión con la db */
 const dbConnect = require('./config/db')
@@ -42,10 +42,7 @@ app.use(bodyParserURLEncode);
 //app.use("/api", require("./routes"))
 app.use('/api', router);
 
-
-//app.use(estudianteRouters); //Use las rutas que están enviandose desde ese archivo
-//estudianteRoutes(router);
-
+userRoutes(router);
 
 const port = process.env.PORT || 3002
 
