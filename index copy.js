@@ -1,26 +1,22 @@
 'use strict'
 
-require("dotenv").config() //Variables de entorno
-
+require("dotenv").config() // Variables de entorno
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require('body-parser');
 const multipart = require('connect-multiparty');
 
 // Conexión con la db
-const dbConnect = require('./config/db')
-dbConnect()
+const dbConnect = require('./config/db');
+dbConnect();
 
 const app = express();
-app.use(cors()); //Permite evitar el error de origen cruzado entre los navegadorees
-const router = express.Router();
+app.use(cors()); // Permite evitar el error de origen cruzado entre los navegadores
 
 // Configuración del bodyParser y multipart
-const bodyParserJSON = bodyParser.json();
-const bodyParserURLEncode = bodyParser.urlencoded({extended:true});
-
-app.use(bodyParserJSON);
-app.use(bodyParserURLEncode);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+//const multipartMiddleware = multipart({ uploadDir: './public/repositorio' });
 
 // Definición de rutas
 const userRoutes = require('./users/users_routes');
@@ -29,12 +25,6 @@ const criteriaRoutes = require('./criteria/criteria_routes');
 // Aplicar rutas al app
 userRoutes(app);
 criteriaRoutes(app);
-
-/*
-const multipartMiddleware = multipart({
-  uploadDir: './public/repositorio'
-});*/
-
 
 // Rutas adicionales
 app.post('/tengohambre', (req, res) => {
