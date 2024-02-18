@@ -6,26 +6,61 @@ const Schema = mongoose.Schema;
 
 const criteriaSchema = new Schema({
 
-    compound:{
+    criteria_name:{
+        type: String,
+        required: true,
+        trim: true,
+        unique: true
+    },
+    criteria_user:{
+      type: Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    criteria_important1:{
         type: String,
         required: true,
         trim: true
     },
-    cost:{
+    criteria_important2:{
         type: String,
         required: true,
         trim: true,
     },
-    environment_impact:{
+    criteria_important3:{
         type: String,
         required: true,
         trim: true,
     },
-    availability:{
-        type: String,
-        required: true,
-        trim: true
-    },
+    value1: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 9,
+      validate: {
+          validator: Number.isInteger,
+          message: '{VALUE} no es un número entero válido'
+      }
+  },
+  value2: {
+    type: Number,
+    required: true,
+    min: 1,
+    max: 9,
+    validate: {
+        validator: Number.isInteger,
+        message: '{VALUE} no es un número entero válido'
+    }
+  },
+  value3: {
+    type: Number,
+    required: true,
+    min: 1,
+    max: 9,
+    validate: {
+        validator: Number.isInteger,
+        message: '{VALUE} no es un número entero válido'
+    }
+  },
 
 },{timestamps: true});
 

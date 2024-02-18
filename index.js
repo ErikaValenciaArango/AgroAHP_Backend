@@ -50,3 +50,13 @@ app.listen(port, '0.0.0.0', () => {
 
 // Servir archivos estáticos
 app.use(express.static('public'));
+
+app.use((err, req, res, next) => {
+  if (err.name === 'ValidationError') {
+    // Manejar ValidationError
+    return res.status(400).json({ error: err.message });
+  }
+  // Manejar otros tipos de errores
+  console.error(err);
+  res.status(500).json({ error: 'Un error inesperado ocurrió.' });
+});

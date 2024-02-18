@@ -3,26 +3,33 @@ const Criteria = require('./criteria_dao');
 const mongoose = require('mongoose');
 
 // Crear un nuevo criterio
-exports.createCriteria = async (req, res, next) => {
-  const { compound, cost, environment_impact, availability } = req.body;
-
-  const newCriteria = {
-    compound,
-    cost,
-    environment_impact,
-    availability,
-  };
+exports.createCriteria = async (req, res) => {
+  const { criteria_name, criteria_user, criteria_important1, criteria_important2, criteria_important3, value1, value2, value3 } = req.body;
 
   try {
-    // Intenta crear el nuevo criterio en la base de datos
-    const criteria = await Criteria.create(newCriteria);
+    const newCriteria = await Criteria.create({
+      criteria_name,
+      criteria_user,
+      criteria_important1,
+      criteria_important2,
+      criteria_important3,
+      value1,
+      value2,
+      value3
+    });
 
-    // Si se crea exitosamente, envía una respuesta de éxito
-    res.status(201).send({ message: 'Criterio creado exitosamente', criteria });
-  } catch (err) {
-    // Manejo de errores al crear el criterio
-    console.error('Error al crear el criterio:', err);
-    res.status(500).send('Error interno del servidor');
+    return res.status(201).json({ message: 'Criterio creado exitosamente', data: newCriteria });
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      let errors = {};
+      for (let field in error.errors) {
+        errors[field] = error.errors[field].message;
+      }
+      return res.status(400).json({ errors });
+    } else {
+      console.error('Error al crear el criterio:', error);
+      return res.status(500).json({ message: 'Error interno del servidor' });
+    }
   }
 };
 
@@ -41,19 +48,43 @@ exports.getAllCriteria = async (req, res, next) => {
   }
 };
 
-// Actualizar la información de un criterio
+exports.getCriteriaById = async (req, res) => {
+  const criteriaId = req.body.id;
+
+  try {
+    const criteria = await Criteria.findById(criteriaId);
+
+    if (!criteria) {
+      return res.status(404).send({ message: 'Criterio no encontrado' });
+    }
+
+    res.json(criteria);
+  } catch (err) {
+    if (err.kind === 'ObjectId') {
+      return res.status(400).send({ message: 'ID no válido' });
+    }
+
+    console.error('Error al obtener el criterio:', err);
+    res.status(500).send({ message: 'Error del Servidor' });
+  }
+};
+
 exports.updateCriteria = async (req, res) => {
-  // Asumiendo que el ObjectId se envía como parte de la ruta o en el cuerpo de la solicitud
-  const criteriaId = req.params.id || req.body.id; // Ajusta esto según cómo recibas el ID
+  const criteriaId = req.body.id;
   const criteriaNewData = {
-    cost: req.body.cost,
-    environment_impact: req.body.environment_impact,
-    availability: req.body.availability,
+    criteria_name: req.body.criteria_name,
+    criteria_user: req.body.criteria_user,
+    criteria_important1: req.body.criteria_important1,
+    criteria_important2: req.body.criteria_important2,
+    criteria_important3: req.body.criteria_important3,
+    value1: req.body.value1,
+    value2: req.body.value2,
+    value3: req.body.value3
   };
 
   try {
     const updateResult = await Criteria.updateOne(
-      { _id: mongoose.Types.ObjectId(criteriaId) }, // Convertir el ID de string a ObjectId
+      { _id: criteriaId },
       { $set: criteriaNewData }
     );
 
@@ -68,37 +99,19 @@ exports.updateCriteria = async (req, res) => {
   }
 };
 
-// Eliminar un criterio
 exports.deleteCriteria = async (req, res) => {
-  const compound = req.body.compound;
+  const criteriaId = req.body.id;
 
   try {
-    const deleteResult = await Criteria.deleteOne({ compound });
-
-    if (deleteResult.deletedCount === 0) {
-      return res.status(404).send({ message: 'Criterio no encontrado' });
-    }
-
-    res.json({ message: 'Criterio Eliminado' });
-  } catch (err) {
-    res.status(500).send({ message: 'Error del Servidor' });
-  }
-};
-
-// Controlador para eliminar un criterio por su ObjectId
-exports.deleteCriteriaById = async (req, res) => {
-  const criteriaId = req.params.criteriaId; // Suponiendo que el ObjectId se pasa como parámetro en la URL
-
-  try {
-    // Intenta eliminar el criterio por su ObjectId
     const deleteResult = await Criteria.deleteOne({ _id: criteriaId });
 
     if (deleteResult.deletedCount === 0) {
       return res.status(404).send({ message: 'Criterio no encontrado' });
     }
 
-    res.json({ message: 'Criterio eliminado exitosamente' });
+    res.json({ message: 'Criterio eliminado' });
   } catch (err) {
-    res.status(500).send('Error del Servidor');
+    console.error('Error al eliminar el criterio:', err);
+    res.status(500).send({ message: 'Error del Servidor' });
   }
 };

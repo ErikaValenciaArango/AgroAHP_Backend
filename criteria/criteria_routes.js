@@ -7,7 +7,8 @@ const CriteriaController = require('./criteria_controller');
 module.exports = (router) => {
   router.post('/createCriteria', CriteriaController.createCriteria);
   router.get('/getAllCriteria', CriteriaController.getAllCriteria);
+  router.post('/getCriteriaById', CriteriaController.getCriteriaById);
   router.post('/updateCriteria', CriteriaController.updateCriteria);
   router.post('/deleteCriteria', CriteriaController.deleteCriteria);
-  router.post('/deleteCriteriaById', CriteriaController.deleteCriteriaById);
+  //router.post('/deleteCriteriaById', CriteriaController.deleteCriteria);
 };
