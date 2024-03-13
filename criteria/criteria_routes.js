@@ -10,5 +10,6 @@ module.exports = (router) => {
   router.post('/getCriteriaById', CriteriaController.getCriteriaById);
   router.post('/updateCriteria', CriteriaController.updateCriteria);
   router.post('/deleteCriteria', CriteriaController.deleteCriteria);
+  router.post('/getCriteriaByUser', CriteriaController.getCriteriaByUser);
   //router.post('/deleteCriteriaById', CriteriaController.deleteCriteria);
 };
